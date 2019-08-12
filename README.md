@@ -3,21 +3,15 @@ Background information:
 
 Website with interactive chart that displays the words Occidental College students use when discussing various topics on the OxyConfessions page. As a result, the attitudes of Occidental College students (who post anonymously on the OxyConfessions page) toward various topics may be loosely extrapolated.
 
-
 FAQ:
 
 What does “Oxy” mean?
-
 It is a nickname for Occidental College.
 
-
 How did you obtain the 23,000+ posts?
-
 With the help of the OxyConfessions Facebook admin.
 
-
 Were any words intentionally filtered out when displaying the word frequencies?
-
 Yes, the current list of words is:
 
 ["7","here's","dont","don’t","im","they're","want","i'm","I’m","y'all","I'm","you're","I've","it’s", "It's","it's","It’s","what's","I'd","who's","let's","there's","that's","he's","she's","who's","someone's","you'd","sean","wouldn't","2","still","can't","take","also","never","every","please","isn","around","getting","here","me","say","does","any","going","person","should","after","year","those","where","thing","only","var","too","something","much","someone","even","being","am","know","really","column1","don't","just","Joe","campus",input,"our","feel","because","think","oxy","students","be","the","of","and","a","to","in","is","you","that","it","he","was","for","on","are","as","with","his","they","I","at","be","this","have","from","or","one","had","by","word","but","not","what","all","were","we","when","your","can","said","there","use","an","each","which","do","how","their","if","will","up","other","about","out","many","then","them","these","so","some","her","would","make","like","him","into","time","has","look","two","more","write","go","see","number","no","way","could","people","people's","my","than","first","water","been","call","who","oil","its","now","find","long","down","day","did","get","come","a.m.","made","may","part"]
