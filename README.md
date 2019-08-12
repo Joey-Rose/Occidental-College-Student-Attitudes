@@ -5,9 +5,11 @@ Website with interactive chart that displays the words Occidental College studen
 
 FAQ:
 What does “Oxy” mean?
+
 It is a nickname for Occidental College.
 
 How did you obtain the 23,000+ posts?
+
 With the help of the OxyConfessions Facebook admin.
 
 Were any words intentionally filtered out when displaying the word frequencies?
