@@ -1,7 +1,7 @@
 # Occidental-College-Student-Attitudes
 Background information:
 
-Website with interactive chart that displays the words Occidental College students use when discussing various topics on the OxyConfessions page. As a result, the attitudes of Occidental College students (who post anonymously on the OxyConfessions page) toward various topics may be loosely extrapolated.
+Website with interactive chart that displays the words Occidental College students use when discussing various topics on the OxyConfessions Facebook page. As a result, the attitudes of Occidental College students (who post anonymously on the page) toward various topics may be loosely extrapolated.
 
 FAQ:
 
