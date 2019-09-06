@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript">
+    //display posts if they're hidden, hide posts if they're shown
+    function unhide(divID) {
+        var item = document.getElementById(divID);
+        if (item) {
+            item.className = (item.className == 'hidden') ? 'unhidden' : 'hidden';
+        }
+    }
+</script>
+
+<head>
+    <!-- load external CSS -->
+    <link rel="stylesheet" type="text/css" href="http://joeyrose.oxycreates.org/confessionsproject/styles.css">
+    <!-- importing chart.js and rendering chart to page-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+</head>
+
+<body>
+    <div style="overflow: hidden; display: flex; flex-direction: row; margin-top: 5%; margin-left: 3%;">
+        <!-- Explanatory stuff on left side of page-->
+        <div class="paragraph_container">
+            <h1 align="center">Oxy Students' Attitudes Toward Various Topics</h1>
+            <p class="lead" align="center">This interactive chart lets you explore the words students use when
+                discussing various topics within the 22,000+ posts found on the <a
+                    href="https://www.facebook.com/pg/OxyConfessions/posts/?ref=page_internal/"> OxyConfessions Facebook
+                    page.</a> </p>
+            <p align="center">Enter any word or phrase into the
+                box below to produce a new chart.
+                <strong>You may also click <a href="javascript:unhide('posts');"> here</a> to show/hide every post that
+                    contains such a topic.</strong>
+            </p>
+            <p align="center">
+                Not all topics are discussed as frequently as others, thus some word frequencies are less rich. Data is
+                not normalized to accomodate this. For more background information, see <a
+                    href=https://github.com/Joey-Rose/Occidental-College-Student-Attitudes/blob/master/README.md/>here</a>.</p> 
+        <div class="form-group">
+            <p align="center">Search topic (case-insensitive): <br> Use
+                        as many words as your heart desires!</p>
+        </div>
+
+        <!-- Send user input to server-side code, trigger function to begin constructing chart -->
+        <form method="POST" action="http://joeyrose.oxycreates.org/confessionsproject/search/"
+            onsubmit="setTimeout(calculationsAndChart(), 1000)" align="center">
+            Topic:<br>
+            <input id="userInput" type="text" name="oxytopic" value="" /><br>
+            <input type="submit" style="display: none;" />
+        </form>
+    </div>
+
+
+    <div class="chart_container">
+        <canvas id="myChart" style="width: 70vw; height: 80vh"></canvas>
+    </div>
+    </div>
+</body>
+<!-- user input-->
+<div id='uI' style="display: none;"><%= JSON.stringify(uI) %></div>
+
+<!-- calls error-checking function every time page is loaded-->
+<img src id='error' style="display: none;" value="<%= JSON.stringify(error) %>" onerror="error()"></img>
+
+<!-- centers chart titles with chart -->
+<div class = "center_chart_title">
+    <h2 align="center" id='h2' style="font-family: Arial, Helvetica, sans-serif"></h2>
+    <div align="center" style="font-family: Arial, Helvetica, sans-serif">Words Associated With Term</div>
+</div>
+
+<!-- "Go back to home page" button -->
+<button type="button" class="button" onclick="window.location.href = 'http://joeyrose.oxycreates.org/'">Go back to home
+    page</button>
+<!-- posts containing keyword/topic at bottom of page when toggled-->
+<div id='posts' class="hidden"><%- String(posts) %></div>
+
+
+<script type="text/javascript">
+    // if the value has finally been rendered, and there's an error raised or an empty array is returned, prompt user with message and go back to the last chart 
+    function error() {
+        if (document.getElementById('error').getAttribute('value') != '"no error"' && document.getElementById('error').getAttribute('value') != '<%= JSON.stringify(error) %>') {
+            alert("Couldn't find any posts discussing this topic :(");
+            history.go(-1);
+        }
+    }
+
+    function calculationsAndChart() {
+    }
+    //get the user input and get rid of the quotation marks surrounding it and double apostrophes if the word was a contraction (needed for SQL query)
+    var renderUserInput = document.getElementById('uI');
+    var input = (renderUserInput.textContent).replace(/(["])/g, "").replace(/\'\'/g, "'");
+
+    //get the posts that have the keyword the user typed in
+    var renderQuery = document.getElementById('posts').textContent;
+
+    //function that takes posts, removes punctuation and commonly spoken words, then returns one long string with words separated by spaces
+    var removeUselessWords = function (txt) {
+        var uselessWordsArray = ["makes", "Veitch's", "through", "why", "very", "thing", "things", "7", "here's", "dont", "don’t", "im", "they're", "want", "i'm", "I’m", "y'all", "I'm", "you're", "I've", "it’s", "It's", "it's", "It’s", "what's", "I'd", "who's", "let's", "there's", "that's", "he's", "she's", "who's", "someone's", "you'd", "sean", "wouldn't", "2", "still", "can't", "take", "also", "never", "every", "please", "isn", "around", "getting", "here", "me", "say", "does", "any", "going", "person", "should", "after", "year", "those", "where", "thing", "only", "var", "too", "something", "much", "someone", "even", "being", "am", "know", "really", "column1", "don't", "just", "Joe", "campus", input, "our", "feel", "because", "think", "oxy", "students", "be", "the", "of", "and", "a", "to", "in", "is", "you", "that", "it", "he", "was", "for", "on", "are", "as", "with", "his", "they", "I", "at", "be", "this", "have", "from", "or", "one", "had", "by", "word", "but", "not", "what", "all", "were", "we", "when", "your", "can", "said", "there", "use", "an", "each", "which", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them", "these", "so", "some", "her", "would", "make", "like", "him", "into", "time", "has", "look", "two", "more", "write", "go", "see", "number", "no", "way", "could", "people", "people's", "my", "than", "first", "water", "been", "call", "who", "oil", "its", "now", "find", "long", "down", "day", "did", "get", "come", "a.m.", "made", "may", "part"];
+        var expStr = uselessWordsArray.join("|");
+        return txt.replace(new RegExp('\\b(' + expStr + ')\\b', 'gi'), ' ').replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g, "").replace(/[\\"\\"]/g, "").replace(/[\]]/g, "").replace(/[\[]/g, "")
+            .replace(/\s{2,}/g, ' ');
+    }
+    //puts long string into variable
+    betterSentence = (removeUselessWords(renderQuery));
+
+    //splits long string into an array, creates a dictionary that lists # of occurences with a given word, then sorts this dictionary by # of occurences
+    var wordsArray = splitByWords(betterSentence);
+    var wordsMap = createWordMap(wordsArray);
+    var finalWordsArray = sortByCount(wordsMap);
+
+    function splitByWords(text) {
+        // split string by spaces (including spaces, tabs, and newlines)
+        var wordsArray = text.split(/\s+/);
+        return wordsArray;
+    }
+    // create dictionary of # of occurences of words
+    function createWordMap(wordsArray) {
+        var wordsMap = {};
+
+        wordsArray.forEach(function (key) {
+            if (wordsMap.hasOwnProperty(key)) {
+                wordsMap[key]++;
+            } else {
+                wordsMap[key] = 1;
+            }
+        });
+
+        return wordsMap;
+    }
+
+    function sortByCount(wordsMap) {
+        // sort by count in ascending order
+        var finalWordsArray = [];
+        finalWordsArray = Object.keys(wordsMap).map(function (key) {
+            return {
+                x: wordsMap[key],
+                y: key
+            };
+        });
+
+        finalWordsArray.sort(function (a, b) {
+            return a.x - b.x;
+        });
+
+        return finalWordsArray;
+    }
+    //get the top 15 words with their # occurences
+    var xTest = finalWordsArray.slice(-15).map(item => item.x);
+    var yTest = finalWordsArray.slice(-15).map(item => item.y);
+
+    //begin constructing chart
+    var ctx = document.getElementById("myChart").getContext("2d");
+
+    //get user input, keep quotation marks, remove double apostrophe -- used for title of graph. Then, make this the title of graph
+    var txt = document.createElement("textarea");
+    txt.innerHTML = "<%= JSON.stringify(uI) %>";
+    var graphTitle = (txt.value).replace(/\'\'/g, "'");
+    document.getElementById("h2").innerHTML = graphTitle;
+
+    //chart info
+    Chart.defaults.global.defaultFontFamily = "Arial";
+    var options = {
+        responsive: false,
+        scales: {
+            xAxes: [
+                {
+                    type: "category",
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Words",
+                        fontStyle: "bold",
+                        fontSize: 13,
+                        fontColor: 'black'
+                    },
+                    ticks: {
+                        fontSize: 13,
+                        fontColor: 'black'
+                    }
+                }
+            ],
+            yAxes: [
+                {
+                    position: "left",
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Number of Times Used",
+                        fontStyle: "bold",
+                        fontSize: 13,
+                        fontColor: 'black'
+                    },
+                    ticks: {
+                        fontSize: 13,
+                        fontColor: 'black'
+                    }
+                }
+            ]
+        },
+        legend: {
+            display: false
+        }
+    };
+    //make the graph based off user input
+    var myChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: yTest,
+            datasets: [
+                {
+                    label: "# Times Used", // Name the series
+                    data: xTest,
+                    fill: false,
+                    showLine: false,
+                    strokeColor: "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    pointRadius: 5,
+                    pointBackgroundColor: 'orange'
+                }
+            ]
+        },
+
+        options: options
+
+    });
+</script>
+
+</html>

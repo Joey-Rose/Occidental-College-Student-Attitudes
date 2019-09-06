@@ -1,0 +1,9 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/joeyrose/myapp"
+PassengerBaseURI "/confessionsproject/search"
+PassengerNodejs "/home/joeyrose/nodevenv/myapp/9/bin/node"
+PassengerAppType node
+PassengerStartupFile app.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+#RewriteEngine On
+#RewriteRule ^ http://127.0.0.1:49153/confessionsproject/search/ [P,L]
