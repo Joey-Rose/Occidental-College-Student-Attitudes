@@ -53,20 +53,22 @@ app.post('/confessionsproject/search/', function (req, res) {
     var stringRequest = mysql.format(
       `SELECT DISTINCT YourSQLcolumn 
        FROM YourSQLtable
-       WHERE YourSQLcolumn LIKE \'${condition1}\'
-       OR YourSQLcolumn LIKE \'${condition2}\'
-       OR YourSQLcolumn LIKE \'${condition3}\'
-       OR YourSQLcolumn LIKE \'${condition4}\'
-       OR YourSQLcolumn LIKE \'${condition5}\'
-       OR YourSQLcolumn LIKE \'${condition6}\'
-       OR YourSQLcolumn LIKE \'${condition7}\'
-       OR YourSQLcolumn LIKE \'${condition8}\'`);
+       WHERE YourSQLcolumn LIKE ?
+       OR YourSQLcolumn LIKE ?
+       OR YourSQLcolumn LIKE ?
+       OR YourSQLcolumn LIKE ?
+       OR YourSQLcolumn LIKE ?
+       OR YourSQLcolumn LIKE ?
+       OR YourSQLcolumn LIKE ?
+       OR YourSQLcolumn LIKE ?`);
 
-    console.log(stringRequest);
+    var inserts = [condition1, condition2, condition3, condition4, condition5, condition6, condition7, condition8];
+
+     console.log(stringRequest);
     //make it so apostrophes aren't escaped
     stringRequest = (stringRequest).replace(/\\'/g, "'");
 
-    connection.query(stringRequest, (error, result, fields) => {
+    connection.query(stringRequest, inserts, (error, result, fields) => {
       if (error) {
         console.error('An error occurred while executing the query');
         throw error;
