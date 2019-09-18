@@ -38,8 +38,6 @@ connection.getConnection(err => {
 //get user input, search all posts that contain user input, renders posts and user input  to client side-- some error checking along the way
 app.post('/confessionsproject/search/', function (req, res) {
   connection.getConnection(function (err, connection) {
-    //if word is contraction, make it have two apostrophes so sql server renders apostrophe
-    req.body.oxytopic = (req.body.oxytopic).replace(/\'/g, "''");
 
     var condition1 = '% ' + req.body.oxytopic + ' %';
     var condition2 = '% ' + req.body.oxytopic + "." + ' %';
@@ -65,8 +63,7 @@ app.post('/confessionsproject/search/', function (req, res) {
     var inserts = [condition1, condition2, condition3, condition4, condition5, condition6, condition7, condition8];
 
      console.log(stringRequest);
-    //make it so apostrophes aren't escaped
-    stringRequest = (stringRequest).replace(/\\'/g, "'");
+     console.log(inserts);
 
     connection.query(stringRequest, inserts, (error, result, fields) => {
       if (error) {
